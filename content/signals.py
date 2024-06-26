@@ -1,18 +1,19 @@
 import os
 from django.dispatch import receiver
-from content.models import Movie
+from Videoflix.settings import MEDIA_ROOT
+from .models import Movie
 from django.db.models.signals import post_save, post_delete
 
-from content.tasks import convert_480p, convert_720p
+from .tasks import convert_480p, convert_720p
 
 
 @receiver(post_save, sender=Movie)
 def video_post_save(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.video_file:
         video_480p_path = convert_480p(instance.video_file.path)
         video_720p_path = convert_720p(instance.video_file.path)
-        instance.video_480p = video_480p_path.replace(instance.video_file.path.rsplit('/', 1)[0], 'videos').replace('\\', '/')
-        instance.video_720p = video_720p_path.replace(instance.video_file.path.rsplit('/', 1)[0], 'videos').replace('\\', '/')
+        instance.video_480p = video_480p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
+        instance.video_720p = video_720p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
         instance.save()
     else:
         pass
@@ -20,7 +21,6 @@ def video_post_save(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=Movie)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-
     if instance.video_file:
         if os.path.isfile(instance.video_file.path):
             os.remove(instance.video_file.path)
