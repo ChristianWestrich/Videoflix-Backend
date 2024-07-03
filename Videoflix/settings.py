@@ -31,6 +31,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1'
 ]
 
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
 CORS_ALLOWED_ORIGINS = ['http://localhost:4200']
 
 CACHES = {
@@ -50,15 +56,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "rest_framework",
-    "rest_framework.authtoken",
-    "corsheaders",
-    "content.apps.ContentConfig",
-    "debug_toolbar"
-
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    'content.apps.ContentConfig',
+    'debug_toolbar',
+    'django_rq'
 ]
 
+CACHE_TTL = 60 * 15
+
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -66,9 +75,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
-    
+    "corsheaders.middleware.CorsMiddleware",  
 ]
+
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': 'foobared',
+        'DEFAULT_TIMEOUT': 360,
+    }
+}
+
+
 
 ROOT_URLCONF = 'Videoflix.urls'
 

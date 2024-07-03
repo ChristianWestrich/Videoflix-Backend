@@ -5,15 +5,26 @@ from .models import Movie
 from django.db.models.signals import post_save, post_delete
 
 from .tasks import convert_480p, convert_720p
+import django_rq
+from django_rq import enqueue
+
+
 
 
 @receiver(post_save, sender=Movie)
 def video_post_save(sender, instance, created, **kwargs):
     if created and instance.video_file:
-        video_480p_path = convert_480p(instance.video_file.path)
-        video_720p_path = convert_720p(instance.video_file.path)
-        instance.video_480p = video_480p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
-        instance.video_720p = video_720p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
+        queue = django_rq.get_queue('default', autocommit=True)
+        video_480p_job = queue.enqueue(convert_480p, instance.video_file.path)
+        video_720p_job = queue.enqueue(convert_720p, instance.video_file.path)
+        
+        video_480p_path = video_480p_job.result
+        video_720p_path = video_720p_job.result
+        
+        if video_480p_path:
+            instance.video_480p = video_480p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
+        if video_720p_path:
+            instance.video_720p = video_720p_path.replace(MEDIA_ROOT, '').replace('\\', '/')
         instance.save()
     else:
         pass
