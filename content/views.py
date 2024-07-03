@@ -6,9 +6,12 @@ from django.core.cache.backends.base import DEFAULT_TIMEOUT
 
 from Videoflix import settings
 from content.models import Movie
+from content.serializer import MovieSerializer
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 @cache_page(CACHE_TTL)
-class MovieSet(viewsets.ModelViewSet):
-    queryset = Movie.object.all()
+class MovieViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    
