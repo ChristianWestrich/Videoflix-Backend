@@ -42,8 +42,9 @@ INTERNAL_IPS = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',  # this is the URL from your Angular APP
-    'http://127.0.0.1:8000'
+    'http://127.0.0.1:8000',
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
 	'http://localhost:4200',
@@ -80,6 +81,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 CACHE_TTL = 60 * 15
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,7 +90,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",  
 ]
 
 

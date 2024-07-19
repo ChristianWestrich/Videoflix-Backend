@@ -1,5 +1,5 @@
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import serializers
@@ -29,7 +29,7 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("No user is associated with this email address.")
+            raise serializers.ValidationError("No user with this email address exists.")
         return value
 
     def save(self):
@@ -38,17 +38,21 @@ class ResetPasswordSerializer(serializers.Serializer):
         user = CustomUser.objects.get(email=email)
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = request.build_absolute_uri(
-            reverse('password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
-        )
-        email_body = f'Hi {user.email},\nPlease use this link to reset your password:\n{reset_link}'
-        send_mail(
-            'Reset your password',
-            email_body,
-            settings.EMAIL_HOST_USER,
-            [user.email],
-            fail_silently=False,
-        )
+        frontend_uri = "http://localhost:4200/password_confirm"
+        reset_link = f"{frontend_uri}/uidb64={uid}/token={token}"
+
+        email_subject = 'Reset your password for Videoflix'
+        email_body_text = f'Hi {user.email},\n\nPlease use this link to reset your password:\n\n{reset_link}'
+        email_body_html = f'''
+            <p>Hi
+             <h2>{user.email},</h2></p>
+            <p>Please use the following link to reset your password:</p>
+           <p><a href="{reset_link}" style="display: inline-block; padding: 15px 25px; font-size: 24px; color: white; background-color: red; border: 1px solid white; border-radius: 30px; text-decoration: none;">Reset Password</a></p>
+        '''
+
+        msg = EmailMultiAlternatives(email_subject, email_body_text, settings.EMAIL_HOST_USER, [user.email])
+        msg.attach_alternative(email_body_html, "text/html")
+        msg.send()
 
 
 class ConfirmPasswordSerializer(serializers.Serializer):
