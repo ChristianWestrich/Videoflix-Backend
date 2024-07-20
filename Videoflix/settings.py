@@ -17,7 +17,6 @@ import redis
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -47,8 +46,8 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-	'http://localhost:4200',
-] # make sure that this is the URL to your FrontEnd
+    'http://localhost:4200',
+]  # make sure that this is the URL to your FrontEnd
 
 CACHES = {
     "default": {
@@ -92,7 +91,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 RQ_QUEUES = {
     'default': {
         'HOST': 'localhost',
@@ -102,8 +100,6 @@ RQ_QUEUES = {
         'DEFAULT_TIMEOUT': 360,
     }
 }
-
-
 
 ROOT_URLCONF = 'Videoflix.urls'
 
@@ -128,7 +124,6 @@ MEDIA_URL = '/media/'
 
 WSGI_APPLICATION = 'Videoflix.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -138,7 +133,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -158,7 +152,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -169,8 +162,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -186,12 +177,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmx.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER'] # used Email address
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']  # used Email address
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES':'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    'DEFAULT_AUTHENTICATION_CLASSES' : [
+    'DEFAULT_PERMISSION_CLASSES': 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',

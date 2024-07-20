@@ -20,6 +20,7 @@ from django.utils.decorators import method_decorator
 
 User = get_user_model()
 
+
 class LoginView(ObtainAuthToken):
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'request': request})
@@ -37,6 +38,7 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -50,7 +52,7 @@ class RegisterView(generics.CreateAPIView):
             email_body = f'Hello Friend. You have registered with your email {user.email}\n\nPlease click on this link to activate your account:\n\n{activation_link}'
             send_mail('Account Activation for Videoflix', email_body, settings.EMAIL_HOST_USER, [user.email])
             user.save()
-            return Response({'user': serializer.data, 'token':token})
+            return Response({'user': serializer.data, 'token': token})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -68,6 +70,7 @@ class LogoutView(APIView):
 
 class ActivateAccountView(generics.GenericAPIView):
     permission_classes = [AllowAny]
+
     def get(self, request, uidb64, token, *args, **kwargs):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
@@ -81,9 +84,11 @@ class ActivateAccountView(generics.GenericAPIView):
         else:
             return Response({'message': 'Activation error'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ResetPasswordView(generics.GenericAPIView):
     serializer_class = ResetPasswordSerializer
     permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -91,13 +96,12 @@ class ResetPasswordView(generics.GenericAPIView):
         return Response({"message": "Password reset email has been sent."}, status=200)
 
 
-
 class PasswordConfirmView(generics.GenericAPIView):
     serializer_class = ConfirmPasswordSerializer
     permission_classes = [AllowAny]
+
     def post(self, request, uidb64, token, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(uidb64=uidb64, token=token)
         return Response({'detail': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
-
