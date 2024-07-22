@@ -69,10 +69,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'content.apps.ContentConfig',
     'debug_toolbar',
     'django_rq',
-    'users'
+    'users',
+    'content',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -96,8 +96,8 @@ RQ_QUEUES = {
         'HOST': 'localhost',
         'PORT': 6379,
         'DB': 0,
-        'PASSWORD': 'foobared',
         'DEFAULT_TIMEOUT': 360,
+        'import': ('content.tasks')
     }
 }
 
@@ -181,7 +181,9 @@ EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']  # used Email address
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
