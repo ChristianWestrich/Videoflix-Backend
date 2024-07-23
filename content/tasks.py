@@ -4,8 +4,8 @@ import subprocess
 from Videoflix.settings import MEDIA_ROOT
 from content.models import Movie
 
-ffmpeg_path = '/opt/homebrew/bin/ffmpeg' #your path for ffmpeg
-ffmpeg_path_win = 'c:/usr/ffmpeg/bin/ffmpeg.exe'
+ffmpeg_path = '/opt/homebrew/bin/ffmpeg' #your path for ffmpeg on mac
+ffmpeg_path_windows = 'c:/usr/ffmpeg/bin/ffmpeg.exe'
 
 def convert_480p(source):
     new_file_name = source.rsplit('.', 1)[0] + '_480p.mp4'
