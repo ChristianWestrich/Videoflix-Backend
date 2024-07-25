@@ -46,7 +46,8 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:4200',
+    'http://localhost:4200'
+    'http://localhost:8000',
 ]  # make sure that this is the URL to your FrontEnd
 
 CACHES = {
